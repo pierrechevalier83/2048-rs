@@ -1,0 +1,7 @@
+[package]
+name = "2048-rs"
+version = "0.1.0"
+authors = ["Pierre Chevalier <pierrechevalier83@gmail.com>"]
+
+[dependencies]
+matrix_display = "0.1"
