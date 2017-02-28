@@ -39,10 +39,10 @@ mod slide_right_test {
     }
 }
 
-fn merge(slice: &mut [i32]) {
+fn merge_backward(slice: &mut [i32]) {
     if slice[0] == slice[1] && slice[1] != 0 {
-        slice[0] += 1;
-        slice[1] = 0;
+        slice[0] = 0;
+        slice[1] += 1;
     }
 }
 
@@ -50,13 +50,11 @@ fn slide_right(data: [i32; 4]) -> [i32; 4] {
     use itertools::partition;
     let mut ret = data.clone();
     partition(&mut ret, |x| *x == 0);
-    ret.reverse();
-    let mut index = 0;
-    while (index < 3) {
-        merge(&mut ret[index..index + 2]);
-        index += 1;
+    let mut index = data.len();
+    while (index > 1) {
+        merge_backward(&mut ret[index - 2..index]);
+        index -= 1;
     }
-    ret.reverse();
     partition(&mut ret, |x| *x == 0);
     ret
 }
