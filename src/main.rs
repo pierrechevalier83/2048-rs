@@ -5,37 +5,37 @@ mod board;
 use rand::{thread_rng, Rng};
 
 #[cfg(test)]
-mod slide_test {
-    use super::slide;
+mod slide_right_test {
+    use super::slide_right;
     #[test]
-    fn test_slide_with_one_element() {
-        assert_eq!([0, 0, 0, 1], slide([0, 1, 0, 0]));
+    fn test_slide_right_with_one_element() {
+        assert_eq!([0, 0, 0, 1], slide_right([0, 1, 0, 0]));
     }
     #[test]
-    fn test_slide_with_two_different_elements() {
-        assert_eq!([0, 0, 2, 1], slide([1, 0, 2, 0]));
+    fn test_slide_right_with_two_different_elements() {
+        assert_eq!([0, 0, 2, 1], slide_right([1, 0, 2, 0]));
     }
     #[test]
-    fn test_slide_with_two_same_elements() {
-        assert_eq!([0, 0, 0, 2], slide([1, 0, 1, 0]));
+    fn test_slide_right_with_two_same_elements() {
+        assert_eq!([0, 0, 0, 2], slide_right([1, 0, 1, 0]));
     }
     #[test]
-    fn test_slide_with_three_same_elements() {
-        assert_eq!([0, 0, 1, 2], slide([1, 0, 1, 1]));
+    fn test_slide_right_with_three_same_elements() {
+        assert_eq!([0, 0, 1, 2], slide_right([1, 0, 1, 1]));
     }
     #[test]
-    fn test_slide_with_three_different_elements() {
-        assert_eq!([0, 0, 2, 2], slide([1, 0, 1, 2]));
-        assert_eq!([0, 2, 1, 2], slide([2, 0, 1, 2]));
-        assert_eq!([0, 0, 2, 2], slide([0, 1, 1, 2]));
+    fn test_slide_right_with_three_different_elements() {
+        assert_eq!([0, 0, 2, 2], slide_right([1, 0, 1, 2]));
+        assert_eq!([0, 2, 1, 2], slide_right([2, 0, 1, 2]));
+        assert_eq!([0, 0, 2, 2], slide_right([0, 1, 1, 2]));
     }
     #[test]
-    fn test_slide_with_four_same_elements() {
-        assert_eq!([0, 0, 2, 2], slide([1, 1, 1, 1]));
+    fn test_slide_right_with_four_same_elements() {
+        assert_eq!([0, 0, 2, 2], slide_right([1, 1, 1, 1]));
     }
     #[test]
-    fn test_slide_with_four_different_elements() {
-        assert_eq!([1, 2, 1, 2], slide([1, 2, 1, 2]));
+    fn test_slide_right_with_four_different_elements() {
+        assert_eq!([1, 2, 1, 2], slide_right([1, 2, 1, 2]));
     }
 }
 
@@ -46,7 +46,7 @@ fn merge(slice: &mut [i32]) {
     }
 }
 
-fn slide(data: [i32; 4]) -> [i32; 4] {
+fn slide_right(data: [i32; 4]) -> [i32; 4] {
     use itertools::partition;
     let mut ret = data.clone();
     partition(&mut ret, |x| *x == 0);
