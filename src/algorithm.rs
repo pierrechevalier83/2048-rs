@@ -95,3 +95,11 @@ pub fn slide_left(data: &[i32]) -> Vec<i32> {
     let ret = data.clone().iter().rev().cloned().collect::<Vec<_>>();
     slide_right(&ret).iter().cloned().rev().collect::<Vec<_>>()
 }
+
+pub fn transpose(data: &mut [i32; 16]) {
+    for i in 0..4 {
+        for j in i..4 {
+            data.swap(i + 4 * j, j + 4 * i);
+        }
+    }
+}
