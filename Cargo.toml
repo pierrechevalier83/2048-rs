@@ -6,4 +6,3 @@ authors = ["Pierre Chevalier <pierrechevalier83@gmail.com>"]
 [dependencies]
 matrix_display = "0.1"
 rand = "0.3"
-itertools = "*"
