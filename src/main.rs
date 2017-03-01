@@ -37,13 +37,26 @@ impl Game {
             data: data,
         }
     }
-    fn data(self) -> [i32; 16] {
+    fn data(&self) -> [i32; 16] {
         self.data
+    }
+    fn right(&mut self) {
+        self.data
+            .chunks_mut(4)
+            .map(|mut row| {
+                let after = algorithm::slide_right(&row);
+                for i in (0..4) {
+                    row[i] = after[i];
+                }
+            })
+            .collect::<Vec<_>>();
     }
 }
 
 fn main() {
     let board = board::Board::new();
-    let game = Game::new();
+    let mut game = Game::new();
+    board.print(game.data());
+    game.right();
     board.print(game.data());
 }

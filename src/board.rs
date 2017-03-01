@@ -2,7 +2,6 @@ extern crate matrix_display;
 use self::matrix_display::*;
 
 pub struct Board {
-    format: Format,
     colour_theme: [i32; 17],
 }
 
@@ -11,10 +10,7 @@ impl Board {
         let colour_theme = [0, 247, 78, 222, 220, 214, 208, 202, 196, 162, 160, 126, 90, 88, 54,
                             53, 52];
 
-        Board {
-            format: Format::new(7, 3),
-            colour_theme: colour_theme,
-        }
+        Board { colour_theme: colour_theme }
     }
     fn cells(&self, data: [i32; 16]) -> Vec<cell::Cell<String>> {
         data.iter()
@@ -27,9 +23,10 @@ impl Board {
             .map(|(s, col)| cell::Cell::new(s, 7, col))
             .collect::<Vec<_>>()
     }
-    pub fn print(self, data: [i32; 16]) {
+    pub fn print(&self, data: [i32; 16]) {
         let matrix = matrix::Matrix::new(4, self.cells(data));
-        let display = MatrixDisplay::new(self.format, matrix);
+        let format = Format::new(7, 3);
+        let display = MatrixDisplay::new(format, matrix);
         display.print(&mut ::std::io::stdout(), &style::BordersStyle::Thick);
     }
 }
