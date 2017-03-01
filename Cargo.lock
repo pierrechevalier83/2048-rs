@@ -2,8 +2,9 @@
 name = "2048-rs"
 version = "0.1.0"
 dependencies = [
- "matrix_display 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "matrix_display 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.3.15 (registry+https://github.com/rust-lang/crates.io-index)",
+ "termion 1.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -18,7 +19,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "matrix_display"
-version = "0.1.0"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "ansi_term 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -34,6 +35,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "termion"
+version = "1.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "libc 0.2.20 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "unicode-segmentation"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -41,6 +50,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [metadata]
 "checksum ansi_term 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)" = "23ac7c30002a5accbf7e8987d0632fa6de155b7c3d39d0067317a391e00a2ef6"
 "checksum libc 0.2.20 (registry+https://github.com/rust-lang/crates.io-index)" = "684f330624d8c3784fb9558ca46c4ce488073a8d22450415c5eb4f4cfb0d11b5"
-"checksum matrix_display 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "22f24833a31b69f63abbae34369dd56851bc2b3a73eb9a977da8733063774c05"
+"checksum matrix_display 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "d0fc1073b3612657a8828ada8a372eed163934556ef4290b93347f8429521e8a"
 "checksum rand 0.3.15 (registry+https://github.com/rust-lang/crates.io-index)" = "022e0636ec2519ddae48154b028864bdce4eaf7d35226ab8e65c611be97b189d"
+"checksum termion 1.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "6e710c59ecea168019486885ade43ea5329bb9a08a117410052fb81b250f40ae"
 "checksum unicode-segmentation 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "18127285758f0e2c6cf325bb3f3d138a12fee27de4f23e146cd6a179f26c2cf3"

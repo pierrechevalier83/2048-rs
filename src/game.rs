@@ -63,6 +63,19 @@ impl Game {
         };
         algorithm::transpose(&mut self.data);
     }
+    pub fn new_tile(&mut self) {
+        let mut value = 1;
+        if rand::random::<i32>() % 10 == 1 {
+            value = 2;
+        }
+        let zeroes_index = self.data
+            .iter()
+            .enumerate()
+            .filter(|&(_, x)| *x == 0)
+            .map(|(i, _)| i)
+            .collect::<Vec<_>>();
+        self.data[zeroes_index[rand::random::<usize>() % zeroes_index.len()]] = value;
+    }
     pub fn right(&mut self) {
         self.horizontal(Direction::right);
     }

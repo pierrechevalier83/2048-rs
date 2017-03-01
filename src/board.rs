@@ -23,10 +23,12 @@ impl Board {
             .map(|(s, col)| cell::Cell::new(s, 7, col))
             .collect::<Vec<_>>()
     }
-    pub fn print(&self, data: [i32; 16]) {
+    pub fn print<W>(&self, data: [i32; 16], out: &mut W)
+        where W: ::std::io::Write
+    {
         let matrix = matrix::Matrix::new(4, self.cells(data));
         let format = Format::new(7, 3);
         let display = MatrixDisplay::new(format, matrix);
-        display.print(&mut ::std::io::stdout(), &style::BordersStyle::Thick);
+        display.print(out, &style::BordersStyle::Thick);
     }
 }
