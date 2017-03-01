@@ -20,7 +20,7 @@ impl Board {
                 1_f64 => (".".to_string(), col),
                 _ => (x.to_string(), col),
             })
-            .map(|(s, col)| cell::Cell::new(s, 7, col))
+            .map(|(s, col)| cell::Cell::new(s, 0, col))
             .collect::<Vec<_>>()
     }
     pub fn print<W>(&self, data: [i32; 16], out: &mut W)
