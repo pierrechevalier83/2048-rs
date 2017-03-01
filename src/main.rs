@@ -1,5 +1,4 @@
 extern crate rand;
-extern crate itertools;
 
 mod board;
 use rand::{thread_rng, Rng};
@@ -7,35 +6,40 @@ use rand::{thread_rng, Rng};
 #[cfg(test)]
 mod slide_right_test {
     use super::slide_right;
+    use super::slide_left;
     #[test]
     fn test_slide_right_with_one_element() {
-        assert_eq!([0, 0, 0, 1], slide_right([0, 1, 0, 0]));
+        assert_eq!(vec![0, 0, 0, 1], slide_right([0, 1, 0, 0]));
+    }
+    #[test]
+    fn test_slide_left_with_one_element() {
+        assert_eq!(vec![1, 0, 0, 0], slide_left([0, 1, 0, 0]));
     }
     #[test]
     fn test_slide_right_with_two_different_elements() {
-        assert_eq!([0, 0, 2, 1], slide_right([1, 0, 2, 0]));
+        assert_eq!(vec![0, 0, 1, 2], slide_right([1, 0, 2, 0]));
     }
     #[test]
     fn test_slide_right_with_two_same_elements() {
-        assert_eq!([0, 0, 0, 2], slide_right([1, 0, 1, 0]));
+        assert_eq!(vec![0, 0, 0, 2], slide_right([1, 0, 1, 0]));
     }
     #[test]
     fn test_slide_right_with_three_same_elements() {
-        assert_eq!([0, 0, 1, 2], slide_right([1, 0, 1, 1]));
+        assert_eq!(vec![0, 0, 1, 2], slide_right([1, 0, 1, 1]));
     }
     #[test]
     fn test_slide_right_with_three_different_elements() {
-        assert_eq!([0, 0, 2, 2], slide_right([1, 0, 1, 2]));
-        assert_eq!([0, 2, 1, 2], slide_right([2, 0, 1, 2]));
-        assert_eq!([0, 0, 2, 2], slide_right([0, 1, 1, 2]));
+        assert_eq!(vec![0, 0, 2, 2], slide_right([1, 0, 1, 2]));
+        assert_eq!(vec![0, 2, 1, 2], slide_right([2, 0, 1, 2]));
+        assert_eq!(vec![0, 0, 2, 2], slide_right([0, 1, 1, 2]));
     }
     #[test]
     fn test_slide_right_with_four_same_elements() {
-        assert_eq!([0, 0, 2, 2], slide_right([1, 1, 1, 1]));
+        assert_eq!(vec![0, 0, 2, 2], slide_right([1, 1, 1, 1]));
     }
     #[test]
     fn test_slide_right_with_four_different_elements() {
-        assert_eq!([1, 2, 1, 2], slide_right([1, 2, 1, 2]));
+        assert_eq!(vec![1, 2, 1, 2], slide_right([1, 2, 1, 2]));
     }
 }
 
@@ -46,17 +50,30 @@ fn merge_backward(slice: &mut [i32]) {
     }
 }
 
-fn slide_right(data: [i32; 4]) -> [i32; 4] {
-    use itertools::partition;
-    let mut ret = data.clone();
-    partition(&mut ret, |x| *x == 0);
+fn stable_partition<T, I, F>(slice: I, pred: F) -> Vec<T>
+    where T: Copy,
+          I: IntoIterator<Item = T>,
+          for<'r> F: Fn(&'r T) -> bool
+{
+    let (mut left, right): (Vec<T>, Vec<T>) = slice.into_iter().partition(pred);
+    left.extend(right.iter());
+    left
+}
+
+fn slide_right(data: [i32; 4]) -> Vec<i32> {
+    let mut ret = stable_partition(data.iter().cloned(), |x| *x == 0);
     let mut index = data.len();
-    while (index > 1) {
+    while index > 1 {
         merge_backward(&mut ret[index - 2..index]);
         index -= 1;
     }
-    partition(&mut ret, |x| *x == 0);
-    ret
+    stable_partition(ret.iter().cloned(), |x| *x == 0)
+}
+
+fn slide_left(data: [i32; 4]) -> Vec<i32> {
+    let mut ret = data.clone();
+    ret.reverse();
+    slide_right(ret).iter().cloned().rev().collect::<Vec<_>>()
 }
 
 enum Move {
