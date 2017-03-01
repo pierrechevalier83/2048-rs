@@ -18,6 +18,14 @@ enum GameStatus {
     interrupted,
 }
 
+fn transpose(data: &mut [i32; 16]) {
+    for i in 0..4 {
+        for j in i..4 {
+            data.swap(i + 4 * j, j + 4 * i);
+        }
+    }
+}
+
 struct Game {
     status: GameStatus,
     score: i32,
@@ -55,11 +63,26 @@ impl Game {
             })
             .collect::<Vec<_>>();
     }
+    fn vertical(&mut self, dir: Direction) {
+        transpose(&mut self.data);
+        match dir {
+            Direction::up => self.left(),
+            Direction::down => self.right(),
+            _ => (),
+        };
+        transpose(&mut self.data);
+    }
     fn right(&mut self) {
         self.horizontal(Direction::right);
     }
     fn left(&mut self) {
         self.horizontal(Direction::left);
+    }
+    fn up(&mut self) {
+        self.vertical(Direction::up);
+    }
+    fn down(&mut self) {
+        self.vertical(Direction::down);
     }
 }
 
@@ -70,5 +93,9 @@ fn main() {
     game.right();
     board.print(game.data());
     game.left();
+    board.print(game.data());
+    game.up();
+    board.print(game.data());
+    game.down();
     board.print(game.data());
 }
