@@ -4,7 +4,7 @@ mod board;
 mod algorithm;
 use rand::{thread_rng, Rng};
 
-enum Move {
+enum Direction {
     up,
     down,
     left,
@@ -40,16 +40,26 @@ impl Game {
     fn data(&self) -> [i32; 16] {
         self.data
     }
-    fn right(&mut self) {
+    fn horizontal(&mut self, dir: Direction) {
         self.data
             .chunks_mut(4)
             .map(|mut row| {
-                let after = algorithm::slide_right(&row);
-                for i in (0..4) {
+                let after = match dir {
+                    Direction::right => algorithm::slide_right(&row),
+                    Direction::left => algorithm::slide_left(&row),
+                    _ => algorithm::slide_right(&row),
+                };
+                for i in 0..4 {
                     row[i] = after[i];
                 }
             })
             .collect::<Vec<_>>();
+    }
+    fn right(&mut self) {
+        self.horizontal(Direction::right);
+    }
+    fn left(&mut self) {
+        self.horizontal(Direction::left);
     }
 }
 
@@ -58,5 +68,7 @@ fn main() {
     let mut game = Game::new();
     board.print(game.data());
     game.right();
+    board.print(game.data());
+    game.left();
     board.print(game.data());
 }
