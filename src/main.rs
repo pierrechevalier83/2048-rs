@@ -33,6 +33,8 @@ fn main() {
         };
         if changed {
             game.new_tile();
+        } else {
+            game.check_if_lost();
         }
         display::display_game(&mut stdout, &board, &game);
         stdout.flush().unwrap();

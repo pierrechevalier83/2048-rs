@@ -10,13 +10,15 @@ enum Direction {
     right,
 }
 
-enum GameStatus {
+#[derive(Clone)]
+pub enum GameStatus {
     ongoing,
     won,
     lost,
     interrupted,
 }
 
+#[derive(Clone)]
 pub struct Game {
     status: GameStatus,
     score: i32,
@@ -41,6 +43,15 @@ impl Game {
     }
     pub fn score(&self) -> i32 {
         self.score
+    }
+    pub fn status(&self) -> GameStatus {
+        self.status.clone()
+    }
+    pub fn check_if_lost(&mut self) {
+        let mut copy = self.clone();
+        if !(copy.right() || copy.left() || copy.up() || copy.down()) {
+            self.status = GameStatus::lost;
+        }
     }
     fn horizontal(&mut self, dir: Direction) -> bool {
         let mut mutated = false;
