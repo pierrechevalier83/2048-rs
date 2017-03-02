@@ -20,6 +20,10 @@ fn exit_prompt() -> bool {
                 exit = true;
                 break;
             }
+            Event::Key(Key::Char('q')) => {
+                exit = true;
+                break;
+            }
             Event::Key(Key::Char('n')) => break,
             _ => (),
         };
