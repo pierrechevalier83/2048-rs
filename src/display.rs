@@ -18,10 +18,10 @@ fn footer<W>(out: &mut W, status: GameStatus)
     where W: Write
 {
     let text = match status {
-        GameStatus::ongoing => "    [ ← ↑ → ↓ ], q for quit\r\n",
-        GameStatus::lost => "    [  🎮 ⛔  ], q for quit\r\n",
-        GameStatus::interrupted => "    [  🎮 🚦  ], quit? (y/n)\r\n",
-        GameStatus::won => "    [ 🎉🎉🎉 ], quit? (y/n)\r\n",
+        GameStatus::Ongoing => "    [ ← ↑ → ↓ ], q for quit\r\n",
+        GameStatus::Lost => "    [  🎮 ⛔  ], q for quit\r\n",
+        GameStatus::Interrupted => "    [  🎮 🚦  ], quit? (y/n)\r\n",
+        GameStatus::Won => "    [ 🎉🎉🎉 ], quit? (y/n)\r\n",
     };
     write!(out, "{}", text).unwrap();
 }

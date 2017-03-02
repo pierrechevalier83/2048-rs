@@ -4,18 +4,18 @@ use algorithm;
 use rand::{thread_rng, Rng};
 
 enum Direction {
-    up,
-    down,
-    left,
-    right,
+    Up,
+    Down,
+    Left,
+    Right,
 }
 
 #[derive(Clone)]
 pub enum GameStatus {
-    ongoing,
-    won,
-    lost,
-    interrupted,
+    Ongoing,
+    Won,
+    Lost,
+    Interrupted,
 }
 
 #[derive(Clone)]
@@ -33,7 +33,7 @@ impl Game {
         data[1] = 1;
         rng.shuffle(&mut data);
         Game {
-            status: GameStatus::ongoing,
+            status: GameStatus::Ongoing,
             score: 0,
             data: data,
         }
@@ -48,15 +48,15 @@ impl Game {
         self.status.clone()
     }
     pub fn interrupt(&mut self) {
-        self.status = GameStatus::interrupted;
+        self.status = GameStatus::Interrupted;
     }
     pub fn go_on(&mut self) {
-        self.status = GameStatus::ongoing;
+        self.status = GameStatus::Ongoing;
     }
     pub fn check_if_lost(&mut self) {
         let mut copy = self.clone();
         if !(copy.right() || copy.left() || copy.up() || copy.down()) {
-            self.status = GameStatus::lost;
+            self.status = GameStatus::Lost;
         }
     }
     fn horizontal(&mut self, dir: Direction) -> bool {
@@ -67,8 +67,8 @@ impl Game {
             .chunks_mut(4)
             .map(|mut row| {
                 let (new_row, new_score) = match dir {
-                    Direction::right => algorithm::slide_right(&row),
-                    Direction::left => algorithm::slide_left(&row),
+                    Direction::Right => algorithm::slide_right(&row),
+                    Direction::Left => algorithm::slide_left(&row),
                     _ => (row.iter().cloned().collect::<Vec<_>>(), 0),
                 };
                 if new_score == 2048 {
@@ -85,15 +85,15 @@ impl Game {
             .collect::<Vec<_>>();
         self.score += score;
         if won {
-            self.status = GameStatus::won;
+            self.status = GameStatus::Won;
         }
         mutated
     }
     fn vertical(&mut self, dir: Direction) -> bool {
         algorithm::transpose(&mut self.data);
         let mutated = match dir {
-            Direction::up => self.left(),
-            Direction::down => self.right(),
+            Direction::Up => self.left(),
+            Direction::Down => self.right(),
             _ => false,
         };
         algorithm::transpose(&mut self.data);
@@ -113,15 +113,15 @@ impl Game {
         self.data[zeroes_index[rand::random::<usize>() % zeroes_index.len()]] = value;
     }
     pub fn right(&mut self) -> bool {
-        self.horizontal(Direction::right)
+        self.horizontal(Direction::Right)
     }
     pub fn left(&mut self) -> bool {
-        self.horizontal(Direction::left)
+        self.horizontal(Direction::Left)
     }
     pub fn up(&mut self) -> bool {
-        self.vertical(Direction::up)
+        self.vertical(Direction::Up)
     }
     pub fn down(&mut self) -> bool {
-        self.vertical(Direction::down)
+        self.vertical(Direction::Down)
     }
 }

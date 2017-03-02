@@ -10,7 +10,6 @@ use termion::event::{Key, Event};
 use termion::input::TermRead;
 use termion::raw::IntoRawMode;
 use std::io::{Write, stdout, stdin};
-use game::GameStatus;
 
 fn exit_prompt() -> bool {
     let mut exit = false;
@@ -64,7 +63,7 @@ fn main() {
         }
         display::display_game(&mut stdout, &board, &game);
         match game.status() {
-            GameStatus::won => {
+            game::GameStatus::Won => {
                 if exit_prompt() {
                     break;
                 } else {
