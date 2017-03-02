@@ -10,6 +10,28 @@ use termion::input::TermRead;
 use termion::raw::IntoRawMode;
 use std::io::{Write, stdout, stdin};
 
+fn header<W>(out: &mut W) where W: Write {
+    write!(out, "2048-rs [pierrec.tech]\r\n").unwrap();
+}
+
+fn footer<W>(out: &mut W) where W: Write {
+    write!(out, "    [ ← ↑ → ↓ ], q for quit\r\n").unwrap();
+}
+
+fn clear<W>(out: &mut W) where W: Write {
+    write!(out,
+           "{}{}",
+           termion::clear::All,
+           termion::cursor::Goto(1, 1)).unwrap();
+}
+
+fn display_game<W>(out: &mut W, board: &board::Board, game: &game::Game) where W: Write {
+    clear(out);
+    header(out);
+    board.print(game.data(), out);
+    footer(out);
+}
+
 fn main() {
     let stdin = stdin();
     let mut stdout = stdout().into_raw_mode().unwrap();
@@ -17,12 +39,7 @@ fn main() {
     let board = board::Board::new();
     let mut game = game::Game::new();
 
-    write!(stdout,
-           "{}{}q to exit\r\n",
-           termion::clear::All,
-           termion::cursor::Goto(1, 1))
-        .unwrap();
-    board.print(game.data(), &mut stdout);
+    display_game(&mut stdout, &board, &game);
     stdout.flush().unwrap();
 
     for c in stdin.events() {
@@ -36,12 +53,8 @@ fn main() {
             _ => (),
         };
         game.new_tile();
-        write!(stdout,
-               "{}{}q to exit\r\n",
-               termion::clear::All,
-               termion::cursor::Goto(1, 1))
-            .unwrap();
-        board.print(game.data(), &mut stdout);
+        display_game(&mut stdout, &board, &game);
         stdout.flush().unwrap();
     }
+
 }
