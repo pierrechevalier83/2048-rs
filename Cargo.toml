@@ -1,7 +1,9 @@
 [package]
 name = "game-2048"
+description = "A cli implementation of the popular 2048 game writen in rust"
 version = "0.1.0"
 authors = ["Pierre Chevalier <pierrechevalier83@gmail.com>"]
+license = "MIT"
 
 [dependencies]
 matrix_display = "0.2"
