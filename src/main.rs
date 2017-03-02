@@ -20,8 +20,9 @@ fn footer<W>(out: &mut W) where W: Write {
 
 fn clear<W>(out: &mut W) where W: Write {
     write!(out,
-           "{}{}",
+           "{}{}{}",
            termion::clear::All,
+           termion::cursor::Hide,
            termion::cursor::Goto(1, 1)).unwrap();
 }
 
