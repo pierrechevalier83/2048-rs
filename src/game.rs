@@ -39,29 +39,38 @@ impl Game {
     pub fn data(&self) -> [i32; 16] {
         self.data
     }
-    fn horizontal(&mut self, dir: Direction) {
+    fn horizontal(&mut self, dir: Direction) -> bool {
+        let mut mutated = false;
+        let mut score = 0;
         self.data
             .chunks_mut(4)
             .map(|mut row| {
                 let after = match dir {
                     Direction::right => algorithm::slide_right(&row),
                     Direction::left => algorithm::slide_left(&row),
-                    _ => algorithm::slide_right(&row),
+                    _ => row.iter().cloned().collect::<Vec<_>>(),
                 };
                 for i in 0..4 {
-                    row[i] = after[i];
+                    if row[i] != after[i] {
+                        row[i] = after[i];
+                        score += row[i];
+                        mutated = true;
+                    }
                 }
             })
             .collect::<Vec<_>>();
+        self.score += score;
+        mutated
     }
-    fn vertical(&mut self, dir: Direction) {
+    fn vertical(&mut self, dir: Direction) -> bool {
         algorithm::transpose(&mut self.data);
-        match dir {
+        let mutated = match dir {
             Direction::up => self.left(),
             Direction::down => self.right(),
-            _ => (),
+            _ => false,
         };
         algorithm::transpose(&mut self.data);
+        mutated
     }
     pub fn new_tile(&mut self) {
         let mut value = 1;
@@ -76,16 +85,16 @@ impl Game {
             .collect::<Vec<_>>();
         self.data[zeroes_index[rand::random::<usize>() % zeroes_index.len()]] = value;
     }
-    pub fn right(&mut self) {
-        self.horizontal(Direction::right);
+    pub fn right(&mut self) -> bool {
+        self.horizontal(Direction::right)
     }
-    pub fn left(&mut self) {
-        self.horizontal(Direction::left);
+    pub fn left(&mut self) -> bool {
+        self.horizontal(Direction::left)
     }
-    pub fn up(&mut self) {
-        self.vertical(Direction::up);
+    pub fn up(&mut self) -> bool {
+        self.vertical(Direction::up)
     }
-    pub fn down(&mut self) {
-        self.vertical(Direction::down);
+    pub fn down(&mut self) -> bool {
+        self.vertical(Direction::down)
     }
 }

@@ -23,15 +23,17 @@ fn main() {
 
     for c in stdin.events() {
         let evt = c.unwrap();
-        match evt {
+        let changed = match evt {
             Event::Key(Key::Char('q')) => break,
             Event::Key(Key::Up) => game.up(),
             Event::Key(Key::Down) => game.down(),
             Event::Key(Key::Left) => game.left(),
             Event::Key(Key::Right) => game.right(),
-            _ => (),
+            _ => false,
         };
-        game.new_tile();
+        if changed {
+            game.new_tile();
+        }
         display::display_game(&mut stdout, &board, &game);
         stdout.flush().unwrap();
     }
