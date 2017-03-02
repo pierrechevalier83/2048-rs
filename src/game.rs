@@ -47,6 +47,12 @@ impl Game {
     pub fn status(&self) -> GameStatus {
         self.status.clone()
     }
+    pub fn interrupt(&mut self) {
+        self.status = GameStatus::interrupted;
+    }
+    pub fn go_on(&mut self) {
+        self.status = GameStatus::ongoing;
+    }
     pub fn check_if_lost(&mut self) {
         let mut copy = self.clone();
         if !(copy.right() || copy.left() || copy.up() || copy.down()) {
@@ -56,6 +62,7 @@ impl Game {
     fn horizontal(&mut self, dir: Direction) -> bool {
         let mut mutated = false;
         let mut score = 0;
+        let mut won = false;
         self.data
             .chunks_mut(4)
             .map(|mut row| {
@@ -64,6 +71,9 @@ impl Game {
                     Direction::left => algorithm::slide_left(&row),
                     _ => (row.iter().cloned().collect::<Vec<_>>(), 0),
                 };
+                if new_score == 2048 {
+                    won = true;
+                }
                 score += new_score;
                 for i in 0..4 {
                     if row[i] != new_row[i] {
@@ -74,6 +84,9 @@ impl Game {
             })
             .collect::<Vec<_>>();
         self.score += score;
+        if won {
+            self.status = GameStatus::won;
+        }
         mutated
     }
     fn vertical(&mut self, dir: Direction) -> bool {
