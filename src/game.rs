@@ -39,21 +39,24 @@ impl Game {
     pub fn data(&self) -> [i32; 16] {
         self.data
     }
+    pub fn score(&self) -> i32 {
+        self.score
+    }
     fn horizontal(&mut self, dir: Direction) -> bool {
         let mut mutated = false;
         let mut score = 0;
         self.data
             .chunks_mut(4)
             .map(|mut row| {
-                let after = match dir {
+                let (new_row, new_score) = match dir {
                     Direction::right => algorithm::slide_right(&row),
                     Direction::left => algorithm::slide_left(&row),
-                    _ => row.iter().cloned().collect::<Vec<_>>(),
+                    _ => (row.iter().cloned().collect::<Vec<_>>(), 0),
                 };
+                score += new_score;
                 for i in 0..4 {
-                    if row[i] != after[i] {
-                        row[i] = after[i];
-                        score += row[i];
+                    if row[i] != new_row[i] {
+                        row[i] = new_row[i];
                         mutated = true;
                     }
                 }
