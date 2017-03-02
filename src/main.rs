@@ -22,7 +22,6 @@ fn exit_prompt() -> bool {
                 break;
             }
             Event::Key(Key::Char('n')) => break,
-            Event::Key(Key::Char('q')) => break,
             _ => (),
         };
     }
@@ -68,6 +67,8 @@ fn main() {
             GameStatus::won => {
                 if exit_prompt() {
                     break;
+                } else {
+                    game.go_on();
                 }
             }
             _ => (),
