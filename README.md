@@ -15,3 +15,6 @@ Run
 ---
 `cargo run --release`
 
+Install
+-------
+`cargo install game-2048`
