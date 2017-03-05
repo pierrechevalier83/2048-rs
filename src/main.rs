@@ -45,6 +45,9 @@ fn main() {
         let evt = c.unwrap();
         let changed = match evt {
             Event::Key(Key::Char('q')) => {
+                if game.over() {
+                    break;
+                }
                 game.interrupt();
                 display::display_game(&mut stdout, &board, &game);
                 if exit_prompt() {
@@ -66,15 +69,12 @@ fn main() {
             game.check_if_lost();
         }
         display::display_game(&mut stdout, &board, &game);
-        match game.status() {
-            game::GameStatus::Won => {
-                if exit_prompt() {
-                    break;
-                } else {
-                    game.go_on();
-                }
+        if game.won() {
+            if exit_prompt() {
+                break;
+            } else {
+                game.go_on();
             }
-            _ => (),
         };
         stdout.flush().unwrap();
     }

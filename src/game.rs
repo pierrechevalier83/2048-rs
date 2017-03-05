@@ -10,7 +10,7 @@ enum Direction {
     Right,
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub enum GameStatus {
     Ongoing,
     Won,
@@ -46,6 +46,12 @@ impl Game {
     }
     pub fn status(&self) -> GameStatus {
         self.status.clone()
+    }
+    pub fn won(&self) -> bool {
+        self.status == GameStatus::Won
+    }
+    pub fn over(&self) -> bool {
+        self.status == GameStatus::Lost
     }
     pub fn interrupt(&mut self) {
         self.status = GameStatus::Interrupted;
