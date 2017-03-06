@@ -37,6 +37,7 @@ fn main() {
 
     let board = board::Board::new();
     let mut game = game::Game::new();
+    let mut already_won = false;
 
     display::display_game(&mut stdout, &board, &game);
     stdout.flush().unwrap();
@@ -68,14 +69,17 @@ fn main() {
         } else {
             game.check_if_lost();
         }
+
         display::display_game(&mut stdout, &board, &game);
         if game.won() {
-            if exit_prompt() {
-                break;
-            } else {
-                game.go_on();
-        		display::display_game(&mut stdout, &board, &game);
+            if !already_won {
+                already_won = true;
+                if exit_prompt() {
+                    break;
+                }
             }
+            game.go_on();
+            display::display_game(&mut stdout, &board, &game);
         };
         stdout.flush().unwrap();
     }
