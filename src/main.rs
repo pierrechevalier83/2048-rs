@@ -74,6 +74,7 @@ fn main() {
                 break;
             } else {
                 game.go_on();
+        		display::display_game(&mut stdout, &board, &game);
             }
         };
         stdout.flush().unwrap();
