@@ -6,7 +6,7 @@ authors = ["Pierre Chevalier <pierrechevalier83@gmail.com>"]
 license = "MIT"
 
 [dependencies]
-matrix_display = "0.2"
+matrix_display = "0.3"
 num = "0.1"
 rand = "0.3"
 termion = "1.2"

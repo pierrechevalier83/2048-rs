@@ -2,7 +2,7 @@
 name = "game-2048"
 version = "0.4.0"
 dependencies = [
- "matrix_display 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "matrix_display 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "num 0.1.37 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.3.15 (registry+https://github.com/rust-lang/crates.io-index)",
  "termion 1.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -20,7 +20,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "matrix_display"
-version = "0.2.0"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "ansi_term 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -122,7 +122,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [metadata]
 "checksum ansi_term 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)" = "23ac7c30002a5accbf7e8987d0632fa6de155b7c3d39d0067317a391e00a2ef6"
 "checksum libc 0.2.20 (registry+https://github.com/rust-lang/crates.io-index)" = "684f330624d8c3784fb9558ca46c4ce488073a8d22450415c5eb4f4cfb0d11b5"
-"checksum matrix_display 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "d0fc1073b3612657a8828ada8a372eed163934556ef4290b93347f8429521e8a"
+"checksum matrix_display 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "01b17b4d78ed9dab823a0bb20d072539d2ad703a487c47b0ad494dbb478e54f4"
 "checksum num 0.1.37 (registry+https://github.com/rust-lang/crates.io-index)" = "98b15ba84e910ea7a1973bccd3df7b31ae282bf9d8bd2897779950c9b8303d40"
 "checksum num-bigint 0.1.36 (registry+https://github.com/rust-lang/crates.io-index)" = "5e2955fede25639c4f4f797e864b7585f20d98069c45e0c86b1d22a808eb9f77"
 "checksum num-complex 0.1.36 (registry+https://github.com/rust-lang/crates.io-index)" = "3534898d8a1f6b16c12f9fc2f4eaabc7ecdcc55f267213caa8988fdc7d60ff94"
