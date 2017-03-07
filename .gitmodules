@@ -1,0 +1,3 @@
+[submodule "aur/2048-rs"]
+	path = aur/2048-rs
+	url = ssh://aur@aur.archlinux.org/2048-rs.git
