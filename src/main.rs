@@ -9,80 +9,93 @@ mod game;
 use termion::event::{Key, Event};
 use termion::input::TermRead;
 use termion::raw::IntoRawMode;
-use std::io::{Write, stdout, stdin};
-
-fn exit_prompt() -> bool {
-    let mut exit = false;
-    for c in stdin().events() {
-        let evt = c.unwrap();
-        match evt {
-            Event::Key(Key::Char('y')) => {
-                exit = true;
-                break;
-            }
-            Event::Key(Key::Char('q')) => {
-                exit = true;
-                break;
-            }
-            Event::Key(Key::Char('n')) => break,
-            _ => (),
-        };
-    }
-    exit
-}
+use std::io::{Write, stdout};
 
 fn main() {
-    let stdin = stdin();
+    let mut stdin = termion::async_stdin().events();
     let mut stdout = stdout().into_raw_mode().unwrap();
 
     let board = board::Board::new();
     let mut game = game::Game::new();
-    let mut already_won = false;
 
     display::display_game(&mut stdout, &board, &game);
     stdout.flush().unwrap();
 
-    for c in stdin.events() {
-        let evt = c.unwrap();
-        let changed = match evt {
-            Event::Key(Key::Char('q')) => {
-                if game.over() {
-                    break;
+    loop {
+        if let Some(evt) = stdin.next() {
+            let mut changed = false;
+            match evt.unwrap() {
+                Event::Key(Key::Char('q')) => {
+                    match game.status() {
+                        game::GameStatus::Interrupted => break,
+                        game::GameStatus::Won => break,
+                        game::GameStatus::Lost => break,
+                        _ => {
+                            game.interrupt();
+                        }
+                    }
                 }
-                game.interrupt();
-                display::display_game(&mut stdout, &board, &game);
-                if exit_prompt() {
-                    break;
-                } else {
-                    game.go_on();
+                Event::Key(Key::Char('y')) => {
+                    match game.status() {
+                        game::GameStatus::Interrupted => break,
+                        game::GameStatus::Won => break,
+                        _ => (),
+                    }
                 }
-                false
+                Event::Key(Key::Char('n')) => {
+                    match game.status() {
+                        game::GameStatus::Interrupted => game.go_on(),
+                        game::GameStatus::Won => game.go_on(),
+                        _ => (),
+                    }
+                }
+                Event::Key(Key::Up) => {
+                    match game.status() {
+                        game::GameStatus::Ongoing => {
+                            changed = game.up();
+                        }
+                        _ => (),
+                    }
+                }
+                Event::Key(Key::Down) => {
+                    match game.status() {
+                        game::GameStatus::Ongoing => {
+                            changed = game.down();
+                        }
+                        _ => (),
+                    }
+                }
+                Event::Key(Key::Left) => {
+                    match game.status() {
+                        game::GameStatus::Ongoing => {
+                            changed = game.left();
+                        }
+                        _ => (),
+                    }
+                }
+                Event::Key(Key::Right) => {
+                    match game.status() {
+                        game::GameStatus::Ongoing => {
+                            changed = game.right();
+                        }
+                        _ => (),
+                    }
+                }
+                _ => (),
+            };
+            if changed {
+                game.new_tile();
+            } else {
+                game.check_if_lost();
             }
-            Event::Key(Key::Up) => game.up(),
-            Event::Key(Key::Down) => game.down(),
-            Event::Key(Key::Left) => game.left(),
-            Event::Key(Key::Right) => game.right(),
-            _ => false,
-        };
-        if changed {
-            game.new_tile();
-        } else {
-            game.check_if_lost();
-        }
-
-        display::display_game(&mut stdout, &board, &game);
-        if game.won() {
-            if !already_won {
-                already_won = true;
-                if exit_prompt() {
-                    break;
-                }
-            }
-            game.go_on();
             display::display_game(&mut stdout, &board, &game);
         };
-        stdout.flush().unwrap();
+        if game.status() == game::GameStatus::Won {
+            display::display_game(&mut stdout, &board, &game);
+            std::thread::sleep(std::time::Duration::from_millis(150));
+		} else {  
+            std::thread::sleep(std::time::Duration::from_millis(50));
+        }
+		stdout.flush().unwrap();
     }
-
-    stdout.flush().unwrap();
 }

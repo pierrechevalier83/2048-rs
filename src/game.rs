@@ -21,6 +21,7 @@ pub enum GameStatus {
 #[derive(Clone)]
 pub struct Game {
     status: GameStatus,
+    already_won: bool,
     score: i32,
     data: [i32; 16],
 }
@@ -34,6 +35,7 @@ impl Game {
         rng.shuffle(&mut data);
         Game {
             status: GameStatus::Ongoing,
+            already_won: false,
             score: 0,
             data: data,
         }
@@ -46,12 +48,6 @@ impl Game {
     }
     pub fn status(&self) -> GameStatus {
         self.status.clone()
-    }
-    pub fn won(&self) -> bool {
-        self.status == GameStatus::Won
-    }
-    pub fn over(&self) -> bool {
-        self.status == GameStatus::Lost
     }
     pub fn interrupt(&mut self) {
         self.status = GameStatus::Interrupted;
@@ -90,8 +86,9 @@ impl Game {
             })
             .collect::<Vec<_>>();
         self.score += score;
-        if won {
+        if won && !self.already_won {
             self.status = GameStatus::Won;
+            self.already_won = true;
         }
         mutated
     }

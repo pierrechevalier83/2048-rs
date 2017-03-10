@@ -11,7 +11,7 @@ fn header<W>(out: &mut W, score: i32)
            "2048-rs [pierrec.tech]{num:>pad$}\r\n",
            num = score,
            pad = 11)
-        .unwrap();
+            .unwrap();
 }
 
 fn footer<W>(out: &mut W, status: GameStatus)
@@ -34,7 +34,7 @@ fn clear<W>(out: &mut W)
            termion::clear::All,
            termion::cursor::Hide,
            termion::cursor::Goto(1, 1))
-        .unwrap();
+            .unwrap();
 }
 
 pub fn display_game<W>(out: &mut W, board: &board::Board, game: &game::Game)
@@ -42,11 +42,11 @@ pub fn display_game<W>(out: &mut W, board: &board::Board, game: &game::Game)
 {
     clear(out);
     header(out, game.score());
-	match game.status() {
-		GameStatus::Ongoing => board.print(game.data(), out),
-	    GameStatus::Lost => board.print_lost(game.data(), out),
+    match game.status() {
+        GameStatus::Ongoing => board.print(game.data(), out),
+        GameStatus::Lost => board.print_lost(game.data(), out),
         GameStatus::Interrupted => board.print_inactive(game.data(), out),
-		GameStatus::Won => board.print_won(game.data(), out),
-	};
+        GameStatus::Won => board.print_won(game.data(), out),
+    };
     footer(out, game.status());
 }

@@ -98,9 +98,17 @@ pub fn slide_right(data: &[i32]) -> (Vec<i32>, i32) {
 }
 
 pub fn slide_left(data: &[i32]) -> (Vec<i32>, i32) {
-    let ret = data.clone().iter().rev().cloned().collect::<Vec<_>>();
+    let ret = data.clone()
+        .iter()
+        .rev()
+        .cloned()
+        .collect::<Vec<_>>();
     let (data, score) = slide_right(&ret);
-    (data.iter().cloned().rev().collect::<Vec<_>>(), score)
+    (data.iter()
+         .cloned()
+         .rev()
+         .collect::<Vec<_>>(),
+     score)
 }
 
 pub fn transpose(data: &mut [i32; 16]) {
