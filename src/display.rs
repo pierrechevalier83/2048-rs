@@ -42,10 +42,11 @@ pub fn display_game<W>(out: &mut W, board: &board::Board, game: &game::Game)
 {
     clear(out);
     header(out, game.score());
-	if game.status() == GameStatus::Ongoing {
-        board.print(game.data(), out);
-	} else {
-        board.print_inactive(game.data(), out);
-	}
+	match game.status() {
+		GameStatus::Ongoing => board.print(game.data(), out),
+	    GameStatus::Lost => board.print_lost(game.data(), out),
+        GameStatus::Interrupted => board.print_inactive(game.data(), out),
+		GameStatus::Won => board.print_won(game.data(), out),
+	};
     footer(out, game.status());
 }
