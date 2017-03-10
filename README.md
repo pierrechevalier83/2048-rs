@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/pierrechevalier83/2048-rs.svg?branch=master)](https://travis-ci.org/pierrechevalier83/2048-rs)
+
 2048-rs - rust implementation of the popular game
 -------------------------------------------------
 - We use [matrix_display](https://github.com/pierrechevalier83/matrix_display) to pretty print the matrix in all its colours and unicode glory.
