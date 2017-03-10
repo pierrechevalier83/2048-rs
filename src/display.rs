@@ -42,6 +42,10 @@ pub fn display_game<W>(out: &mut W, board: &board::Board, game: &game::Game)
 {
     clear(out);
     header(out, game.score());
-    board.print(game.data(), out);
+	if game.status() == GameStatus::Ongoing {
+        board.print(game.data(), out);
+	} else {
+        board.print_inactive(game.data(), out);
+	}
     footer(out, game.status());
 }

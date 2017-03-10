@@ -1,6 +1,7 @@
 extern crate matrix_display;
 use self::matrix_display::*;
 
+#[derive(Clone)]
 pub struct Board {
     colour_theme: [i32; 17],
 }
@@ -31,4 +32,11 @@ impl Board {
         let display = MatrixDisplay::new(format, matrix);
         display.print(out, &style::BordersStyle::Thick);
     }
+    pub fn print_inactive<W>(&self, data: [i32; 16], out: &mut W)
+	    where W: ::std::io::Write
+	{
+	    let mut copy = self.clone();
+		copy.colour_theme = [0, 255, 251, 248, 246, 244, 242, 241, 240, 239, 238, 237, 236, 235, 234, 233, 232];
+		copy.print(data, out);
+	}
 }
