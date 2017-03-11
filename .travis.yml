@@ -1,5 +1,7 @@
 sudo: false
 language: rust
+git:
+    submodules: false
 rust:
 - nightly
 - beta
