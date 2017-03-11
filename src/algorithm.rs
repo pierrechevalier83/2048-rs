@@ -6,63 +6,63 @@ mod slide_test {
     use super::slide_left;
     #[test]
     fn test_slide_right_with_one_element() {
-        assert_eq!(vec![0, 0, 0, 1], slide_right(&[0, 1, 0, 0]));
+        assert_eq!((vec![0, 0, 0, 1], 0), slide_right(&[0, 1, 0, 0]));
     }
     #[test]
     fn test_slide_left_with_one_element() {
-        assert_eq!(vec![1, 0, 0, 0], slide_left(&[0, 1, 0, 0]));
+        assert_eq!((vec![1, 0, 0, 0], 0), slide_left(&[0, 1, 0, 0]));
     }
     #[test]
     fn test_slide_right_with_two_different_elements() {
-        assert_eq!(vec![0, 0, 1, 2], slide_right(&[1, 0, 2, 0]));
+        assert_eq!((vec![0, 0, 1, 2], 0), slide_right(&[1, 0, 2, 0]));
     }
     #[test]
     fn test_slide_left_with_two_different_elements() {
-        assert_eq!(vec![1, 2, 0, 0], slide_left(&[1, 0, 2, 0]));
+        assert_eq!((vec![1, 2, 0, 0], 0), slide_left(&[1, 0, 2, 0]));
     }
     #[test]
     fn test_slide_right_with_two_same_elements() {
-        assert_eq!(vec![0, 0, 0, 2], slide_right(&[1, 0, 1, 0]));
+        assert_eq!((vec![0, 0, 0, 2], 4), slide_right(&[1, 0, 1, 0]));
     }
     #[test]
     fn test_slide_left_with_two_same_elements() {
-        assert_eq!(vec![2, 0, 0, 0], slide_left(&[1, 0, 1, 0]));
+        assert_eq!((vec![2, 0, 0, 0], 4), slide_left(&[1, 0, 1, 0]));
     }
     #[test]
     fn test_slide_right_with_three_same_elements() {
-        assert_eq!(vec![0, 0, 1, 2], slide_right(&[1, 0, 1, 1]));
+        assert_eq!((vec![0, 0, 1, 2], 4), slide_right(&[1, 0, 1, 1]));
     }
     #[test]
     fn test_slide_left_with_three_same_elements() {
-        assert_eq!(vec![2, 1, 0, 0], slide_left(&[1, 0, 1, 1]));
+        assert_eq!((vec![2, 1, 0, 0], 4), slide_left(&[1, 0, 1, 1]));
     }
     #[test]
     fn test_slide_right_with_three_different_elements() {
-        assert_eq!(vec![0, 0, 2, 2], slide_right(&[1, 0, 1, 2]));
-        assert_eq!(vec![0, 2, 1, 2], slide_right(&[2, 0, 1, 2]));
-        assert_eq!(vec![0, 0, 2, 2], slide_right(&[0, 1, 1, 2]));
+        assert_eq!((vec![0, 0, 2, 2], 4), slide_right(&[1, 0, 1, 2]));
+        assert_eq!((vec![0, 2, 1, 2], 0), slide_right(&[2, 0, 1, 2]));
+        assert_eq!((vec![0, 0, 2, 2], 4), slide_right(&[0, 1, 1, 2]));
     }
     #[test]
     fn test_slide_left_with_three_different_elements() {
-        assert_eq!(vec![2, 2, 0, 0], slide_left(&[1, 0, 1, 2]));
-        assert_eq!(vec![2, 1, 2, 0], slide_left(&[2, 0, 1, 2]));
-        assert_eq!(vec![2, 2, 0, 0], slide_left(&[0, 1, 1, 2]));
+        assert_eq!((vec![2, 2, 0, 0], 4), slide_left(&[1, 0, 1, 2]));
+        assert_eq!((vec![2, 1, 2, 0], 0), slide_left(&[2, 0, 1, 2]));
+        assert_eq!((vec![2, 2, 0, 0], 4), slide_left(&[0, 1, 1, 2]));
     }
     #[test]
     fn test_slide_right_with_four_same_elements() {
-        assert_eq!(vec![0, 0, 2, 2], slide_right(&[1, 1, 1, 1]));
+        assert_eq!((vec![0, 0, 2, 2], 8), slide_right(&[1, 1, 1, 1]));
     }
     #[test]
     fn test_slide_left_with_four_same_elements() {
-        assert_eq!(vec![2, 2, 0, 0], slide_left(&[1, 1, 1, 1]));
+        assert_eq!((vec![2, 2, 0, 0], 8), slide_left(&[1, 1, 1, 1]));
     }
     #[test]
     fn test_slide_right_with_four_different_elements() {
-        assert_eq!(vec![1, 2, 1, 2], slide_right(&[1, 2, 1, 2]));
+        assert_eq!((vec![1, 2, 1, 2], 0), slide_right(&[1, 2, 1, 2]));
     }
     #[test]
     fn test_slide_left_with_four_different_elements() {
-        assert_eq!(vec![1, 2, 1, 2], slide_left(&[1, 2, 1, 2]));
+        assert_eq!((vec![1, 2, 1, 2], 0), slide_left(&[1, 2, 1, 2]));
     }
 }
 
