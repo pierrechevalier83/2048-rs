@@ -3,7 +3,7 @@ name = "game-2048"
 description = "A cli implementation of the popular 2048 game writen in rust"
 homepage = "https://github.com/pierrechevalier83/2048-rs"
 keywords=["2048", "cli", "game"]
-version = "0.5.0"
+version = "0.5.1"
 authors = ["Pierre Chevalier <pierrechevalier83@gmail.com>"]
 license = "MIT"
 
