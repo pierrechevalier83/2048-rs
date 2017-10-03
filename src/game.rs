@@ -37,7 +37,7 @@ impl Game {
             status: GameStatus::Ongoing,
             already_won: false,
             score: 0,
-            data: data,
+            data,
         }
     }
     pub fn data(&self) -> [i32; 16] {
@@ -67,11 +67,11 @@ impl Game {
         let mut won = false;
         self.data
             .chunks_mut(4)
-            .map(|mut row| {
+            .map(|row| {
                 let (new_row, new_score) = match dir {
-                    Direction::Right => algorithm::slide_right(&row),
-                    Direction::Left => algorithm::slide_left(&row),
-                    _ => (row.iter().cloned().collect::<Vec<_>>(), 0),
+                    Direction::Right => algorithm::slide_right(row),
+                    Direction::Left => algorithm::slide_left(row),
+                    _ => (row.to_vec(), 0),
                 };
                 if new_score == 2048 {
                     won = true;
@@ -103,10 +103,12 @@ impl Game {
         mutated
     }
     pub fn new_tile(&mut self) {
-        let mut value = 1;
-        if rand::random::<i32>() % 10 == 1 {
-            value = 2;
-        }
+        let value = if rand::random::<i32>() % 10 == 1 {
+            2
+        } else {
+            1
+        };
+
         let zeroes_index = self.data
             .iter()
             .enumerate()

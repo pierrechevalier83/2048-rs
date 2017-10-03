@@ -14,10 +14,10 @@ fn header<W>(out: &mut W, score: i32)
             .unwrap();
 }
 
-fn footer<W>(out: &mut W, status: GameStatus)
+fn footer<W>(out: &mut W, status: &GameStatus)
     where W: Write
 {
-    let text = match status {
+    let text = match *status {
         GameStatus::Ongoing => "    [ ← ↑ → ↓ ], q for quit\r\n",
         GameStatus::Lost => "    [  🎮 ⛔  ], q for quit\r\n",
         GameStatus::Interrupted => "    [  🎮 🚦  ], quit? (y/n)\r\n",
@@ -48,5 +48,5 @@ pub fn display_game<W>(out: &mut W, board: &board::Board, game: &game::Game)
         GameStatus::Interrupted => board.print_inactive(game.data(), out),
         GameStatus::Won => board.print_won(game.data(), out),
     };
-    footer(out, game.status());
+    footer(out, &game.status());
 }
