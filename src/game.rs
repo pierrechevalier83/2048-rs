@@ -2,6 +2,7 @@ extern crate rand;
 
 use algorithm;
 use rand::{thread_rng, Rng};
+use termion::event::Key;
 
 enum Direction {
     Up,
@@ -37,7 +38,7 @@ impl Game {
             status: GameStatus::Ongoing,
             already_won: false,
             score: 0,
-            data: data,
+            data,
         }
     }
     pub fn data(&self) -> [i32; 16] {
@@ -67,11 +68,11 @@ impl Game {
         let mut won = false;
         self.data
             .chunks_mut(4)
-            .map(|mut row| {
+            .map(|row| {
                 let (new_row, new_score) = match dir {
-                    Direction::Right => algorithm::slide_right(&row),
-                    Direction::Left => algorithm::slide_left(&row),
-                    _ => (row.iter().cloned().collect::<Vec<_>>(), 0),
+                    Direction::Right => algorithm::slide_right(row),
+                    Direction::Left => algorithm::slide_left(row),
+                    _ => (row.to_vec(), 0),
                 };
                 if new_score == 2048 {
                     won = true;
@@ -103,10 +104,12 @@ impl Game {
         mutated
     }
     pub fn new_tile(&mut self) {
-        let mut value = 1;
-        if rand::random::<i32>() % 10 == 1 {
-            value = 2;
-        }
+        let value = if rand::random::<i32>() % 10 == 1 {
+            2
+        } else {
+            1
+        };
+
         let zeroes_index = self.data
             .iter()
             .enumerate()
@@ -115,6 +118,7 @@ impl Game {
             .collect::<Vec<_>>();
         self.data[zeroes_index[rand::random::<usize>() % zeroes_index.len()]] = value;
     }
+
     pub fn right(&mut self) -> bool {
         self.horizontal(Direction::Right)
     }
@@ -126,5 +130,15 @@ impl Game {
     }
     pub fn down(&mut self) -> bool {
         self.vertical(Direction::Down)
+    }
+
+    pub fn movement(&mut self, key: Key) -> bool {
+        match key {
+            Key::Up => self.up(),
+            Key::Left => self.left(),
+            Key::Right => self.right(),
+            Key::Down => self.down(),
+            _ => false
+        }
     }
 }

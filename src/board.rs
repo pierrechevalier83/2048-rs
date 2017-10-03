@@ -12,14 +12,14 @@ impl Board {
         let colour_theme = [0, 247, 78, 222, 220, 214, 208, 202, 196, 162, 160, 126, 90, 88, 54,
                             53, 52];
 
-        Board { colour_theme: colour_theme }
+        Board { colour_theme }
     }
     fn cells(&self, data: [i32; 16]) -> Vec<cell::Cell<String>> {
         data.iter()
             .cloned()
             .map(|i| (2_f64.powi(i), *self.colour_theme.get(i as usize).unwrap() as u8))
-            .map(|(x, col)| match x {
-                     1_f64 => (".".to_string(), col),
+            .map(|(x, col)| match x as u32 {
+                     1 => (".".to_string(), col),
                      _ => (x.to_string(), col),
                  })
             .map(|(s, col)| cell::Cell::new(s, 0, col))
@@ -56,9 +56,7 @@ impl Board {
         let mut rng = thread_rng();
         let mut fw = sample(&mut rng, 1..256, 17);
         fw[0] = 0;
-        for i in 0..17 {
-            fireworks.colour_theme[i] = fw[i];
-        }
+        fireworks.colour_theme[..17].clone_from_slice(&fw[..17]);
         fireworks.print(data, out);
     }
 }

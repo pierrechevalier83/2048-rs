@@ -1,3 +1,5 @@
+#![cfg_attr(feature = "clippy", feature(plugin))]
+#![cfg_attr(feature = "clippy", plugin(clippy))]
 extern crate rand;
 extern crate termion;
 
@@ -9,7 +11,11 @@ mod game;
 use termion::event::{Key, Event};
 use termion::input::TermRead;
 use termion::raw::IntoRawMode;
+
 use std::io::{Write, stdout};
+use std::thread;
+
+use game::GameStatus;
 
 fn main() {
     let mut stdin = termion::async_stdin().events();
@@ -27,9 +33,7 @@ fn main() {
             match evt.unwrap() {
                 Event::Key(Key::Char('q')) => {
                     match game.status() {
-                        game::GameStatus::Interrupted => break,
-                        game::GameStatus::Won => break,
-                        game::GameStatus::Lost => break,
+                        GameStatus::Interrupted | GameStatus::Won | GameStatus::Lost => break,
                         _ => {
                             game.interrupt();
                         }
@@ -37,48 +41,19 @@ fn main() {
                 }
                 Event::Key(Key::Char('y')) => {
                     match game.status() {
-                        game::GameStatus::Interrupted => break,
-                        game::GameStatus::Won => break,
+                        GameStatus::Interrupted | GameStatus::Won => break,
                         _ => (),
                     }
                 }
                 Event::Key(Key::Char('n')) => {
                     match game.status() {
-                        game::GameStatus::Interrupted => game.go_on(),
-                        game::GameStatus::Won => game.go_on(),
+                        GameStatus::Interrupted | GameStatus::Won => game.go_on(),
                         _ => (),
                     }
                 }
-                Event::Key(Key::Up) => {
-                    match game.status() {
-                        game::GameStatus::Ongoing => {
-                            changed = game.up();
-                        }
-                        _ => (),
-                    }
-                }
-                Event::Key(Key::Down) => {
-                    match game.status() {
-                        game::GameStatus::Ongoing => {
-                            changed = game.down();
-                        }
-                        _ => (),
-                    }
-                }
-                Event::Key(Key::Left) => {
-                    match game.status() {
-                        game::GameStatus::Ongoing => {
-                            changed = game.left();
-                        }
-                        _ => (),
-                    }
-                }
-                Event::Key(Key::Right) => {
-                    match game.status() {
-                        game::GameStatus::Ongoing => {
-                            changed = game.right();
-                        }
-                        _ => (),
+                Event::Key(key) => {
+                    if let GameStatus::Ongoing = game.status() {
+                        changed = game.movement(key)
                     }
                 }
                 _ => (),
@@ -92,9 +67,9 @@ fn main() {
         };
         if game.status() == game::GameStatus::Won {
             display::display_game(&mut stdout, &board, &game);
-            std::thread::sleep(std::time::Duration::from_millis(150));
+            thread::sleep(std::time::Duration::from_millis(150));
 		} else {  
-            std::thread::sleep(std::time::Duration::from_millis(50));
+            thread::sleep(std::time::Duration::from_millis(50));
         }
 		stdout.flush().unwrap();
     }
