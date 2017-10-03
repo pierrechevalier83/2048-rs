@@ -51,24 +51,9 @@ fn main() {
                         _ => (),
                     }
                 }
-                Event::Key(Key::Up) => {
+                Event::Key(key) => {
                     if let GameStatus::Ongoing = game.status() {
-                        changed = game.up();
-                    }
-                }
-                Event::Key(Key::Down) => {
-                    if let GameStatus::Ongoing = game.status() {
-                        changed = game.down();
-                    }
-                }
-                Event::Key(Key::Left) => {
-                    if let GameStatus::Ongoing = game.status() {
-                        changed = game.left();
-                    }
-                }
-                Event::Key(Key::Right) => {
-                    if let GameStatus::Ongoing = game.status() {
-                        changed = game.right();
+                        changed = game.movement(key)
                     }
                 }
                 _ => (),

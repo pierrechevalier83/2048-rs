@@ -2,6 +2,7 @@ extern crate rand;
 
 use algorithm;
 use rand::{thread_rng, Rng};
+use termion::event::Key;
 
 enum Direction {
     Up,
@@ -117,6 +118,7 @@ impl Game {
             .collect::<Vec<_>>();
         self.data[zeroes_index[rand::random::<usize>() % zeroes_index.len()]] = value;
     }
+
     pub fn right(&mut self) -> bool {
         self.horizontal(Direction::Right)
     }
@@ -128,5 +130,15 @@ impl Game {
     }
     pub fn down(&mut self) -> bool {
         self.vertical(Direction::Down)
+    }
+
+    pub fn movement(&mut self, key: Key) -> bool {
+        match key {
+            Key::Up => self.up(),
+            Key::Left => self.left(),
+            Key::Right => self.right(),
+            Key::Down => self.down(),
+            _ => false
+        }
     }
 }
