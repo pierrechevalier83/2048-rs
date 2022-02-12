@@ -1,59 +1,58 @@
 #![cfg_attr(feature = "clippy", feature(plugin))]
 #![cfg_attr(feature = "clippy", plugin(clippy))]
-extern crate rand;
-extern crate termion;
 
 mod algorithm;
 mod board;
 mod display;
 mod game;
 
-use termion::event::{Key, Event};
-use termion::input::TermRead;
-use termion::raw::IntoRawMode;
+use std::io::{stdout, BufWriter, Write};
+use std::time::Duration;
 
-use std::io::{Write, stdout};
-use std::thread;
-
+use crossterm::event::{Event, KeyCode, KeyEvent};
+use crossterm::QueueableCommand;
 use game::GameStatus;
 
-fn main() {
-    let mut stdin = termion::async_stdin().events();
-    let mut stdout = stdout().into_raw_mode().unwrap();
+fn main() -> Result<(), std::io::Error> {
+    let stdout_raw = stdout();
+    let mut stdout = BufWriter::new(stdout_raw.lock());
+    crossterm::terminal::enable_raw_mode()?;
 
     let board = board::Board::new();
     let mut game = game::Game::new();
 
-    display::display_game(&mut stdout, &board, &game);
-    stdout.flush().unwrap();
+    display::display_game(&mut stdout, &board, &game)?.flush()?;
 
     loop {
-        if let Some(evt) = stdin.next() {
+        if crossterm::event::poll(Duration::from_millis(50))? {
             let mut changed = false;
-            match evt.unwrap() {
-                Event::Key(Key::Char('q')) => {
-                    match game.status() {
-                        GameStatus::Interrupted | GameStatus::Won | GameStatus::Lost => break,
-                        _ => {
-                            game.interrupt();
-                        }
+            match crossterm::event::read()? {
+                Event::Key(KeyEvent {
+                    code: KeyCode::Char('q'),
+                    ..
+                }) => match game.status() {
+                    GameStatus::Interrupted | GameStatus::Won | GameStatus::Lost => break,
+                    _ => {
+                        game.interrupt();
                     }
-                }
-                Event::Key(Key::Char('y')) => {
-                    match game.status() {
-                        GameStatus::Interrupted | GameStatus::Won => break,
-                        _ => (),
-                    }
-                }
-                Event::Key(Key::Char('n')) => {
-                    match game.status() {
-                        GameStatus::Interrupted | GameStatus::Won => game.go_on(),
-                        _ => (),
-                    }
-                }
-                Event::Key(key) => {
+                },
+                Event::Key(KeyEvent {
+                    code: KeyCode::Char('y'),
+                    ..
+                }) => match game.status() {
+                    GameStatus::Interrupted | GameStatus::Won => break,
+                    _ => (),
+                },
+                Event::Key(KeyEvent {
+                    code: KeyCode::Char('n'),
+                    ..
+                }) => match game.status() {
+                    GameStatus::Interrupted | GameStatus::Won => game.go_on(),
+                    _ => (),
+                },
+                Event::Key(KeyEvent { code, .. }) => {
                     if let GameStatus::Ongoing = game.status() {
-                        changed = game.movement(key)
+                        changed = game.movement(code)
                     }
                 }
                 _ => (),
@@ -63,14 +62,13 @@ fn main() {
             } else {
                 game.check_if_lost();
             }
-            display::display_game(&mut stdout, &board, &game);
+            display::display_game(&mut stdout, &board, &game)?;
         };
-        if game.status() == game::GameStatus::Won {
-            display::display_game(&mut stdout, &board, &game);
-            thread::sleep(std::time::Duration::from_millis(150));
-		} else {  
-            thread::sleep(std::time::Duration::from_millis(50));
+        if game.status() == &game::GameStatus::Won {
+            display::display_game(&mut stdout, &board, &game)?;
         }
-		stdout.flush().unwrap();
+        stdout.flush()?;
     }
+    stdout.queue(crossterm::cursor::Show)?.flush()?;
+    crossterm::terminal::disable_raw_mode()
 }

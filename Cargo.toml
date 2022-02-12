@@ -2,18 +2,24 @@
 name = "game-2048"
 description = "A cli implementation of the popular 2048 game writen in rust"
 homepage = "https://github.com/pierrechevalier83/2048-rs"
-keywords=["2048", "cli", "game"]
-version = "0.5.1"
+keywords = ["2048", "cli", "game"]
+version = "0.5.2"
 authors = ["Pierre Chevalier <pierrechevalier83@gmail.com>"]
 license = "MIT"
+edition = "2021"
 
 [dependencies]
-matrix_display = "0.3"
-num = "0.1"
-rand = "0.3"
-termion = "1.2"
+matrix_display = "1.0.0"
+rand = "0.8.4"
 
 clippy = { version = "*", optional = true }
+crossterm = "0.23.0"
+rand_xoshiro = "0.6.0"
 
 [features]
 default = []
+
+[profile.release]
+lto = "fat"
+panic = "abort"
+codegen-units = 1
