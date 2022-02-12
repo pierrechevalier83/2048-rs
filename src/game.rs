@@ -1,8 +1,10 @@
-extern crate rand;
-
-use algorithm;
-use rand::{thread_rng, Rng};
-use termion::event::Key;
+use super::algorithm;
+use crossterm::event::KeyCode;
+use rand::{
+    prelude::{IteratorRandom, SliceRandom},
+    Rng, SeedableRng,
+};
+use rand_xoshiro::Xoshiro256Plus;
 
 enum Direction {
     Up,
@@ -25,20 +27,22 @@ pub struct Game {
     already_won: bool,
     score: i32,
     data: [i32; 16],
+    rng: Xoshiro256Plus,
 }
 
 impl Game {
     pub fn new() -> Game {
-        let mut rng = thread_rng();
+        let mut rng = Xoshiro256Plus::from_entropy();
         let mut data = [0; 16];
         data[0] = 1;
         data[1] = 1;
-        rng.shuffle(&mut data);
+        data.shuffle(&mut rng);
         Game {
             status: GameStatus::Ongoing,
             already_won: false,
             score: 0,
             data,
+            rng,
         }
     }
     pub fn data(&self) -> [i32; 16] {
@@ -47,8 +51,8 @@ impl Game {
     pub fn score(&self) -> i32 {
         self.score
     }
-    pub fn status(&self) -> GameStatus {
-        self.status.clone()
+    pub fn status(&self) -> &GameStatus {
+        &self.status
     }
     pub fn interrupt(&mut self) {
         self.status = GameStatus::Interrupted;
@@ -66,26 +70,23 @@ impl Game {
         let mut mutated = false;
         let mut score = 0;
         let mut won = false;
-        self.data
-            .chunks_mut(4)
-            .map(|row| {
-                let (new_row, new_score) = match dir {
-                    Direction::Right => algorithm::slide_right(row),
-                    Direction::Left => algorithm::slide_left(row),
-                    _ => (row.to_vec(), 0),
-                };
-                if new_score == 2048 {
-                    won = true;
+        self.data.chunks_mut(4).for_each(|row| {
+            let (new_row, new_score) = match dir {
+                Direction::Right => algorithm::slide_right(row),
+                Direction::Left => algorithm::slide_left(row),
+                _ => (row.to_vec(), 0),
+            };
+            if new_score == 2048 {
+                won = true;
+            }
+            score += new_score;
+            for i in 0..4 {
+                if row[i] != new_row[i] {
+                    row[i] = new_row[i];
+                    mutated = true;
                 }
-                score += new_score;
-                for i in 0..4 {
-                    if row[i] != new_row[i] {
-                        row[i] = new_row[i];
-                        mutated = true;
-                    }
-                }
-            })
-            .collect::<Vec<_>>();
+            }
+        });
         self.score += score;
         if won && !self.already_won {
             self.status = GameStatus::Won;
@@ -104,19 +105,20 @@ impl Game {
         mutated
     }
     pub fn new_tile(&mut self) {
-        let value = if rand::random::<i32>() % 10 == 1 {
+        let value = if self.rng.gen::<i32>() % 10 == 1 {
             2
         } else {
             1
         };
 
-        let zeroes_index = self.data
+        self.data[self
+            .data
             .iter()
             .enumerate()
             .filter(|&(_, x)| *x == 0)
             .map(|(i, _)| i)
-            .collect::<Vec<_>>();
-        self.data[zeroes_index[rand::random::<usize>() % zeroes_index.len()]] = value;
+            .choose(&mut self.rng)
+            .unwrap()] = value;
     }
 
     pub fn right(&mut self) -> bool {
@@ -132,13 +134,13 @@ impl Game {
         self.vertical(Direction::Down)
     }
 
-    pub fn movement(&mut self, key: Key) -> bool {
+    pub fn movement(&mut self, key: KeyCode) -> bool {
         match key {
-            Key::Up | Key::Char('k') => self.up(),
-            Key::Left | Key::Char('h') => self.left(),
-            Key::Right | Key::Char('l') => self.right(),
-            Key::Down | Key::Char('j') => self.down(),
-            _ => false
+            KeyCode::Up | KeyCode::Char('k') => self.up(),
+            KeyCode::Left | KeyCode::Char('h') => self.left(),
+            KeyCode::Right | KeyCode::Char('l') => self.right(),
+            KeyCode::Down | KeyCode::Char('j') => self.down(),
+            _ => false,
         }
     }
 }

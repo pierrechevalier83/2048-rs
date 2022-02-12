@@ -1,9 +1,7 @@
-extern crate num;
-
 #[cfg(test)]
 mod slide_test {
-    use super::slide_right;
     use super::slide_left;
+    use super::slide_right;
     #[test]
     fn test_slide_right_with_one_element() {
         assert_eq!((vec![0, 0, 0, 1], 0), slide_right(&[0, 1, 0, 0]));
@@ -70,16 +68,17 @@ fn merge_backward(slice: &mut [i32]) -> i32 {
     if slice[0] == slice[1] && slice[1] != 0 {
         slice[0] = 0;
         slice[1] += 1;
-        num::pow::pow(2, slice[1] as usize)
+        2i32.pow(slice[1] as u32)
     } else {
         0
     }
 }
 
 fn stable_partition<T, I, F>(slice: I, pred: F) -> Vec<T>
-    where T: Copy,
-          I: IntoIterator<Item = T>,
-          for<'r> F: Fn(&'r T) -> bool
+where
+    T: Copy,
+    I: IntoIterator<Item = T>,
+    for<'r> F: Fn(&'r T) -> bool,
 {
     let (mut left, right): (Vec<T>, Vec<T>) = slice.into_iter().partition(pred);
     left.extend(right.iter());
@@ -87,28 +86,20 @@ fn stable_partition<T, I, F>(slice: I, pred: F) -> Vec<T>
 }
 
 pub fn slide_right(data: &[i32]) -> (Vec<i32>, i32) {
-    let mut ret = stable_partition(data.iter().cloned(), |x| *x == 0);
+    let mut ret = stable_partition(data.iter().copied(), |x| *x == 0);
     let mut index = data.len();
     let mut score = 0;
     while index > 1 {
         score += merge_backward(&mut ret[index - 2..index]);
         index -= 1;
     }
-    (stable_partition(ret.iter().cloned(), |x| *x == 0), score)
+    (stable_partition(ret.iter().copied(), |x| *x == 0), score)
 }
 
 pub fn slide_left(data: &[i32]) -> (Vec<i32>, i32) {
-    let ret = data.clone()
-        .iter()
-        .rev()
-        .cloned()
-        .collect::<Vec<_>>();
+    let ret = data.iter().rev().copied().collect::<Vec<_>>();
     let (data, score) = slide_right(&ret);
-    (data.iter()
-         .cloned()
-         .rev()
-         .collect::<Vec<_>>(),
-     score)
+    (data.iter().rev().copied().collect::<Vec<_>>(), score)
 }
 
 pub fn transpose(data: &mut [i32; 16]) {
