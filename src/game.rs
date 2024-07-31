@@ -136,10 +136,10 @@ impl Game {
 
     pub fn movement(&mut self, key: KeyCode) -> bool {
         match key {
-            KeyCode::Up | KeyCode::Char('k') => self.up(),
-            KeyCode::Left | KeyCode::Char('h') => self.left(),
-            KeyCode::Right | KeyCode::Char('l') => self.right(),
-            KeyCode::Down | KeyCode::Char('j') => self.down(),
+            KeyCode::Up | KeyCode::Char('k') | KeyCode::Char('w') => self.up(),
+            KeyCode::Left | KeyCode::Char('h') | KeyCode::Char('a') => self.left(),
+            KeyCode::Right | KeyCode::Char('l') | KeyCode::Char('d') => self.right(),
+            KeyCode::Down | KeyCode::Char('j') | KeyCode::Char('s') => self.down(),
             _ => false,
         }
     }
